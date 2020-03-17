@@ -39,13 +39,13 @@ class Ramp
 
     conditions_met = last_parking_sessions.map do |ps|
       if last_exit_at.nil?
-        last_exit_at = ps.exit_at
-        Time.now <= ps.exit_at + REQUESTS_OVERLOAD_PARAMETERS[:max_seconds_between_requests]
+        condition_met = Time.now <= ps.exit_at + REQUESTS_OVERLOAD_PARAMETERS[:max_seconds_between_requests]
       else
-        overloaded = last_exit_at <= ps.exit_at + REQUESTS_OVERLOAD_PARAMETERS[:max_seconds_between_requests]
-        last_exit_at = ps.exit_at
-        overloaded
+        condition_met = last_exit_at <= ps.exit_at + REQUESTS_OVERLOAD_PARAMETERS[:max_seconds_between_requests]
       end
+
+      last_exit_at = ps.exit_at
+      condition_met
     end
 
     !conditions_met.include?(false)
